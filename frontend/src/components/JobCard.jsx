@@ -4,6 +4,8 @@ const sourceBadgeColors = {
   'Arbeitnow': 'bg-green-100 text-green-700',
   'La Bonne Alternance': 'bg-purple-100 text-purple-700',
   'Adzuna': 'bg-orange-100 text-orange-700',
+  'France Travail': 'bg-blue-100 text-blue-700',
+  'Indeed': 'bg-red-100 text-red-700',
 }
 
 const typeBadgeColors = {
@@ -29,6 +31,9 @@ export default function JobCard({ job, isSelected, onSelect }) {
       {job.location && (
         <p className="text-xs text-gray-500 mt-1 flex items-center gap-0.5">
           \ud83d\udccd {job.location}
+          {job.distance_km != null && (
+            <span className="ml-1 text-indigo-600 font-medium">({job.distance_km} km)</span>
+          )}
         </p>
       )}
       <div className="flex items-center gap-1.5 mt-2 flex-wrap">
@@ -42,6 +47,7 @@ export default function JobCard({ job, isSelected, onSelect }) {
         </span>
       </div>
       {job.salary && <p className="text-xs text-green-600 font-medium mt-2">\ud83d\udcb0 {job.salary}</p>}
+      {job.education_level && <p className="text-xs text-gray-500 mt-1">\ud83c\udf93 {job.education_level}</p>}
       {job.url && (
         <a
           href={job.url}
