@@ -10,7 +10,6 @@ body {
 .leaflet-container {
   height: 100%;
   width: 100%;
-  border-radius: 0.5rem;
 }
 
 ::-webkit-scrollbar {
@@ -24,4 +23,51 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #94a3b8;
   border-radius: 3px;
+}
+
+/* Drawer styles */
+.drawer {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.drawer.open {
+  width: 300px;
+  min-width: 300px;
+}
+
+.drawer-toggle {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  background: #00467f;
+  color: white;
+  border: none;
+  padding: 12px 8px;
+  cursor: pointer;
+  border-radius: 0 6px 6px 0;
+  font-size: 18px;
+  transition: left 0.3s ease;
+}
+
+.drawer-toggle.open {
+  left: 300px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .drawer.open {
+    width: 260px;
+    min-width: 260px;
+  }
+  .drawer-toggle.open {
+    left: 260px;
+  }
 }

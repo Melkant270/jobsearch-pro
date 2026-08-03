@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { apiUrl } from './api'
 import Navbar from './components/Navbar'
 import Filters from './components/Filters'
@@ -8,19 +8,33 @@ import MapView from './components/MapView'
 function App() {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   const [selectedJob, setSelectedJob] = useState(null)
   const [mapCenter, setMapCenter] = useState([46.603354, 1.888334])
   const [searchLocation, setSearchLocation] = useState(null)
   const [radius, setRadius] = useState(50)
+  const [drawerOpen, setDrawerOpen] = useState(window.innerWidth >= 768)
 
   const handleSearch = useCallback(async (filters) => {
     setLoading(true)
-    setRadius(filters.radius)
+    setError(null)
+    setRadius(filters.radius || 50)
     try {
       const resp = await fetch(apiUrl('/api/search'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(filters),
+        body: JSON.stringify({
+          keyword: filters.keyword || '',
+          job_types: filters.job_types || [],
+          sector: filters.sector || '',
+          education_level: filters.education_level || '',
+          country: filters.country || 'France',
+          city: filters.city || '',
+          lat: filters.lat || null,
+          lng: filters.lng || null,
+          radius: filters.radius || 50,
+          date_filter: filters.date_filter || ''
+        })
       })
       const data = await resp.json()
       setJobs(data.jobs || [])
@@ -30,33 +44,57 @@ function App() {
       }
     } catch (e) {
       console.error('Search error:', e)
+      setError('Erreur lors de la recherche. Veuillez r\u00e9essayer.')
       setJobs([])
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    handleSearch({ keyword: '', job_types: [], country: 'France', radius: 50 })
   }, [])
 
   return (
-    <div className="h-screen flex flex-col">
+    <div style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}>
       <Navbar />
-      <div className="flex-1 flex overflow-hidden">
-        <div className="w-[420px] min-w-[380px] flex flex-col border-r border-gray-200 bg-white">
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        {/* Drawer */}
+        <div className={`drawer ${drawerOpen ? 'open' : ''}`}>
           <Filters onSearch={handleSearch} />
-          <JobList
-            jobs={jobs}
-            loading={loading}
-            selectedJob={selectedJob}
-            onSelectJob={setSelectedJob}
-          />
         </div>
-        <div className="flex-1">
-          <MapView
-            jobs={jobs}
-            center={mapCenter}
-            selectedJob={selectedJob}
-            onSelectJob={setSelectedJob}
-            searchLocation={searchLocation}
-            radius={radius}
-          />
+        {/* Toggle button */}
+        <button
+          className={`drawer-toggle ${drawerOpen ? 'open' : ''}`}
+          onClick={() => setDrawerOpen(!drawerOpen)}
+        >
+          {drawerOpen ? '\u2715' : '\u2630'}
+        </button>
+        {/* Main content */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+          <div style={{ height: '50%', minHeight: '300px' }}>
+            <MapView
+              jobs={jobs}
+              center={mapCenter}
+              selectedJob={selectedJob}
+              onSelectJob={setSelectedJob}
+              searchLocation={searchLocation}
+              radius={radius}
+            />
+          </div>
+          <div style={{ flex: 1, overflow: 'auto' }}>
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 text-sm">
+                {error}
+              </div>
+            )}
+            <JobList
+              jobs={jobs}
+              loading={loading}
+              selectedJob={selectedJob}
+              onSelectJob={setSelectedJob}
+            />
+          </div>
         </div>
       </div>
     </div>

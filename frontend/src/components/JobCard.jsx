@@ -20,37 +20,35 @@ export default function JobCard({ job, isSelected, onSelect }) {
   return (
     <div
       onClick={() => onSelect(job)}
-      className={`p-3 border-b border-gray-100 cursor-pointer transition-colors hover:bg-indigo-50 ${
-        isSelected ? 'bg-indigo-50 border-l-4 border-l-indigo-600' : ''
+      className={`p-4 border border-gray-200 rounded-lg cursor-pointer transition-all hover:shadow-md hover:border-indigo-300 ${
+        isSelected ? 'ring-2 ring-indigo-500 border-indigo-500 bg-indigo-50' : 'bg-white'
       }`}
     >
-      <div className="flex items-start justify-between gap-2">
-        <h3 className="text-sm font-semibold text-gray-800 line-clamp-1">{job.title}</h3>
-      </div>
-      <p className="text-xs text-gray-600 mt-0.5">{job.company}</p>
-      <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-        {job.location && (
-          <span className="text-xs text-gray-500 flex items-center gap-0.5">
-            \ud83d\udccd {job.location}
-          </span>
-        )}
+      <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">{job.title}</h3>
+      <p className="text-xs text-gray-600 mt-1">{job.company}</p>
+      {job.location && (
+        <p className="text-xs text-gray-500 mt-1 flex items-center gap-0.5">
+          \ud83d\udccd {job.location}
+        </p>
+      )}
+      <div className="flex items-center gap-1.5 mt-2 flex-wrap">
         {job.type && (
-          <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${typeBadgeColors[job.type] || 'bg-gray-100 text-gray-600'}`}>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${typeBadgeColors[job.type] || 'bg-gray-100 text-gray-600'}`}>
             {job.type}
           </span>
         )}
-        <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${sourceBadgeColors[job.source] || 'bg-gray-100 text-gray-600'}`}>
+        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${sourceBadgeColors[job.source] || 'bg-gray-100 text-gray-600'}`}>
           {job.source}
         </span>
       </div>
-      {job.salary && <p className="text-xs text-green-600 font-medium mt-1">\ud83d\udcb0 {job.salary}</p>}
+      {job.salary && <p className="text-xs text-green-600 font-medium mt-2">\ud83d\udcb0 {job.salary}</p>}
       {job.url && (
         <a
           href={job.url}
           target="_blank"
           rel="noopener noreferrer"
           onClick={e => e.stopPropagation()}
-          className="inline-block mt-1.5 text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+          className="inline-block mt-3 px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded-md hover:bg-indigo-700 transition-colors"
         >
           Voir l'offre \u2192
         </a>

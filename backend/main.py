@@ -127,7 +127,6 @@ async def fetch_labonnealternance(client: httpx.AsyncClient, filters: SearchFilt
                     continue
                 place = item.get("place", {}) or {}
                 company = item.get("company", {}) or {}
-                contact = item.get("contact", {}) or {}
                 jobs.append({
                     "id": f"lba_{item.get('id', '')}",
                     "title": item.get("title", "Alternance"),
@@ -139,14 +138,13 @@ async def fetch_labonnealternance(client: httpx.AsyncClient, filters: SearchFilt
                     "sector": "",
                     "education_level": item.get("diploma", {}).get("label", "") if isinstance(item.get("diploma"), dict) else "",
                     "description": item.get("title", ""),
-                    "url": item.get("url", f"https://labonnealternance.apprentissage.beta.gouv.fr"),
+                    "url": item.get("url", "https://labonnealternance.apprentissage.beta.gouv.fr"),
                     "source": "La Bonne Alternance",
                     "posted_date": "",
                     "salary": "",
                 })
         else:
-            print(f"LaBonneAlternance formationsParRegion returned {resp.status_code}: {resp.text[:200]}")
-
+            print(f"LaBonneAlternance returned {resp.status_code}: {resp.text[:200]}")
             url2 = "https://api.apprentissage.beta.gouv.fr/api/job/v1/search"
             params2 = {"latitude": lat, "longitude": lng, "radius": radius, "romes": romes}
             resp2 = await client.get(url2, params=params2, timeout=15)
@@ -169,8 +167,6 @@ async def fetch_labonnealternance(client: httpx.AsyncClient, filters: SearchFilt
                         "posted_date": "",
                         "salary": "",
                     })
-            else:
-                print(f"LaBonneAlternance new API returned {resp2.status_code}: {resp2.text[:200]}")
     except Exception as e:
         print(f"LaBonneAlternance error: {e}")
     return jobs
@@ -235,24 +231,26 @@ async def search_jobs(filters: SearchFilters):
         if isinstance(result, list):
             all_jobs.extend(result)
 
-    # Job type filter
+    # RELAXED FILTERS — only filter if explicitly selected
+    # Job type: only filter when user explicitly selected types AND job has a type
     if filters.job_types:
         type_lower = [t.lower() for t in filters.job_types]
-        filtered_jobs = []
-        for j in all_jobs:
-            jtype = j.get("type", "").lower()
-            if not jtype or any(t in jtype for t in type_lower) or any(jtype in t for t in type_lower):
-                filtered_jobs.append(j)
-        all_jobs = filtered_jobs
+        all_jobs = [j for j in all_jobs if not j.get("type") or
+                    any(t in j.get("type", "").lower() for t in type_lower)]
 
-    # Keyword filter
-    if filters.keyword and all_jobs:
+    # Keyword: only apply local filter if API already returned results with keyword
+    if filters.keyword:
         kw = filters.keyword.lower()
-        keyword_filtered = [j for j in all_jobs if kw in j.get("title", "").lower() or kw in j.get("description", "").lower() or kw in j.get("company", "").lower()]
-        if keyword_filtered:
-            all_jobs = keyword_filtered
+        kw_filtered = [j for j in all_jobs if
+                       kw in j.get("title", "").lower() or
+                       kw in j.get("description", "").lower() or
+                       kw in j.get("company", "").lower() or
+                       kw in j.get("sector", "").lower()]
+        if kw_filtered:
+            all_jobs = kw_filtered
+        # else: keep all results (API-level search is enough)
 
-    # Filter by radius
+    # Filter by radius if location set
     if filters.lat and filters.lng:
         filtered = []
         for j in all_jobs:

@@ -2,7 +2,22 @@ import React, { useState } from 'react'
 import { apiUrl } from '../api'
 
 const JOB_TYPES = ['CDI', 'CDD', 'Stage', 'Alternance', 'Freelance', 'Temps partiel']
-const SECTORS = ['Tech', 'Finance', 'Sant\u00e9', 'Education', 'BTP', 'Commerce', 'Logistique', 'Art & Design', 'Autres']
+const SECTORS = [
+  'Tous secteurs',
+  'Industrie',
+  'Tech & Num\u00e9rique',
+  'Finance & Comptabilit\u00e9',
+  'Sant\u00e9 & Social',
+  '\u00c9ducation & Formation',
+  'BTP & Construction',
+  'Commerce & Vente',
+  'Logistique & Transport',
+  'Juridique',
+  'Art & Design',
+  'Agriculture',
+  '\u00c9nergie',
+  'Autres'
+]
 const EDUCATION_LEVELS = ['Aucun', 'CAP/BEP', 'Bac', 'Bac+2', 'Bac+3', 'Bac+5', 'Doctorat']
 const COUNTRIES = [
   'France', 'Allemagne', 'Belgique', 'Suisse', 'Luxembourg', 'Espagne', 'Italie',
@@ -67,7 +82,7 @@ export default function Filters({ onSearch }) {
   }
 
   return (
-    <form onSubmit={handleSearch} className="p-4 space-y-3 border-b border-gray-200 overflow-y-auto max-h-[45vh]">
+    <form onSubmit={handleSearch} className="p-4 space-y-3 overflow-y-auto">
       {/* Keyword */}
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1">Mot-cl\u00e9 / Poste</label>
@@ -75,7 +90,7 @@ export default function Filters({ onSearch }) {
           type="text"
           value={keyword}
           onChange={e => setKeyword(e.target.value)}
-          placeholder="Ex: D\u00e9veloppeur React, Data Analyst..."
+          placeholder="Ex: D\u00e9veloppeur, Technicien..."
           className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         />
       </div>
@@ -101,54 +116,54 @@ export default function Filters({ onSearch }) {
         </div>
       </div>
 
-      {/* Sector + Education */}
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">Secteur</label>
-          <select
-            value={sector}
-            onChange={e => setSector(e.target.value)}
-            className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs"
-          >
-            <option value="">Tous</option>
-            {SECTORS.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">Niveau d'\u00e9tudes</label>
-          <select
-            value={educationLevel}
-            onChange={e => setEducationLevel(e.target.value)}
-            className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs"
-          >
-            <option value="">Tous</option>
-            {EDUCATION_LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
-          </select>
-        </div>
+      {/* Sector */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-600 mb-1">Secteur</label>
+        <select
+          value={sector}
+          onChange={e => setSector(e.target.value)}
+          className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs"
+        >
+          <option value="">Tous</option>
+          {SECTORS.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
       </div>
 
-      {/* Country + City */}
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">Pays</label>
-          <select
-            value={country}
-            onChange={e => setCountry(e.target.value)}
-            className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs"
-          >
-            {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1">Ville</label>
-          <input
-            type="text"
-            value={city}
-            onChange={e => setCity(e.target.value)}
-            placeholder="Ex: Paris, Lyon..."
-            className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs"
-          />
-        </div>
+      {/* Education */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-600 mb-1">Niveau d'\u00e9tudes</label>
+        <select
+          value={educationLevel}
+          onChange={e => setEducationLevel(e.target.value)}
+          className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs"
+        >
+          <option value="">Tous</option>
+          {EDUCATION_LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
+        </select>
+      </div>
+
+      {/* Country */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-600 mb-1">Pays</label>
+        <select
+          value={country}
+          onChange={e => setCountry(e.target.value)}
+          className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs"
+        >
+          {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+
+      {/* City */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-600 mb-1">Ville</label>
+        <input
+          type="text"
+          value={city}
+          onChange={e => setCity(e.target.value)}
+          placeholder="Ex: Paris, Lyon..."
+          className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs"
+        />
       </div>
 
       {/* Radius */}
