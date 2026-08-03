@@ -43,31 +43,57 @@ body {
 
 .drawer-toggle {
   position: fixed;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 20px;
+  left: 10px;
   z-index: 1000;
   background: #00467f;
   color: white;
   border: none;
-  padding: 12px 8px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
-  border-radius: 0 6px 6px 0;
+  border-radius: 50%;
   font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   transition: left 0.3s ease;
 }
 
 .drawer-toggle.open {
-  left: 300px;
+  left: 310px;
 }
 
 /* Responsive */
 @media (max-width: 767px) {
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 100vh;
+  }
   .drawer.open {
     width: 260px;
     min-width: 260px;
   }
+  .drawer-toggle {
+    bottom: 20px;
+    left: 10px;
+  }
   .drawer-toggle.open {
-    left: 260px;
+    left: 270px;
+  }
+  .map-container {
+    height: 45vh !important;
+    min-height: 200px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .map-container {
+    height: 50% !important;
+    min-height: 300px !important;
   }
 }

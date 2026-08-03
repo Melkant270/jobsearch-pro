@@ -44,7 +44,7 @@ function App() {
       }
     } catch (e) {
       console.error('Search error:', e)
-      setError('Erreur lors de la recherche. Veuillez r\u00e9essayer.')
+      setError('Erreur lors de la recherche. Veuillez réessayer.')
       setJobs([])
     } finally {
       setLoading(false)
@@ -58,7 +58,7 @@ function App() {
   return (
     <div style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}>
       <Navbar />
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative' }}>
         {/* Drawer */}
         <div className={`drawer ${drawerOpen ? 'open' : ''}`}>
           <Filters onSearch={handleSearch} />
@@ -67,12 +67,13 @@ function App() {
         <button
           className={`drawer-toggle ${drawerOpen ? 'open' : ''}`}
           onClick={() => setDrawerOpen(!drawerOpen)}
+          aria-label="Toggle filters"
         >
-          {drawerOpen ? '\u2715' : '\u2630'}
+          {drawerOpen ? '✕' : '☰'}
         </button>
         {/* Main content */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
-          <div style={{ height: '50%', minHeight: '300px' }}>
+          <div className="map-container">
             <MapView
               jobs={jobs}
               center={mapCenter}
